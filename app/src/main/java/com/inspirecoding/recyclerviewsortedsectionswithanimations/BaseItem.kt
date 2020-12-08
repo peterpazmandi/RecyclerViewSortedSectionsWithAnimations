@@ -7,7 +7,7 @@ import androidx.viewbinding.ViewBinding
  * */
 interface BaseItem {
 
-    val viewType : Int
+    val itemViewType : ViewBinding
 
     // Used to compare items when diffing so RecyclerView knows how to animate
     val uniqueId: Any

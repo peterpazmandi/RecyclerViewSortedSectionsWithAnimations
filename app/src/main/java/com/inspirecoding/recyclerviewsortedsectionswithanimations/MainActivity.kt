@@ -2,14 +2,17 @@ package com.inspirecoding.recyclerviewsortedsectionswithanimations
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.inspirecoding.recyclerviewsortedsectionswithanimations.databinding.ActivityMainBinding
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var fruitListAdapter : BaseListAdapter
+    private lateinit var binding : ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(R.layout.activity_main)
 
         val fruits = mutableListOf("Apple", "Banana", "Boysenberry", "Cherry", "Citron", "Körte", "Kávé", "Kiskanál", "Alma", "aaa")
@@ -34,7 +37,7 @@ class MainActivity : AppCompatActivity() {
     private fun createAlphabetizedFruit(fruits: List<String>): MutableList<BaseItem> {
 
         // Wrap data in list items
-        val fruitItems = fruits.map { FruitItem(it) }.sortedBy { it.name }
+        val fruitItems = fruits.map { FruitItem(it, this) }.sortedBy { it.name }
 
         val fruitsWithAlphabetHeaders = mutableListOf<BaseItem>()
 
@@ -43,7 +46,7 @@ class MainActivity : AppCompatActivity() {
         fruitItems.forEach { fruit ->
             fruit.name.firstOrNull()?.toString()?.let {
                 if (it != currentHeader) {
-                    fruitsWithAlphabetHeaders.add(HeaderItem(it))
+                    fruitsWithAlphabetHeaders.add(HeaderItem(it, this))
                     currentHeader = it
                 }
             }
