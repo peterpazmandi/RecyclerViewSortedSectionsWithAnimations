@@ -1,12 +1,13 @@
 package com.inspirecoding.recyclerviewsortedsectionswithanimations
 
-import android.app.LauncherActivity
+import androidx.viewbinding.ViewBinding
 
 /**
  * List items used in [BaseViewHolder]. Implement this with items containing data to display
  * */
 interface BaseItem {
-    val layoutId: Int
+
+    val viewType : Int
 
     // Used to compare items when diffing so RecyclerView knows how to animate
     val uniqueId: Any
@@ -14,7 +15,7 @@ interface BaseItem {
     /**
      * @param itemClickCallback Optional click callback for clicks on the whole item
      * */
-    fun bind(holder: BaseViewHolder, itemClickCallback: ((BaseItem) -> Unit)?)
+    fun bind(binding : ViewBinding, itemClickCallback: ((BaseItem) -> Unit)?)
 
     // Make sure implementations implement equals function (data classes do already)
     override fun equals(other: Any?): Boolean

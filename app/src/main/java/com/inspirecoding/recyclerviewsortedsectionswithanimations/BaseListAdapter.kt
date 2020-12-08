@@ -5,6 +5,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
+import androidx.viewbinding.ViewBinding
+import com.inspirecoding.recyclerviewsortedsectionswithanimations.databinding.LayoutFruitItemBinding
+import com.inspirecoding.recyclerviewsortedsectionswithanimations.databinding.LayoutHeaderItemBinding
 
 /**
  * A base adapter that most RecyclerViews should be able to use
@@ -29,16 +32,36 @@ class BaseListAdapter(
 
 ) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder {
+    private lateinit var binding : ViewBinding
 
-        // The layoutId is used as the viewType
-        val itemView = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
-        return BaseViewHolder(itemView)
+    companion object {
+        val HEADER_ITEM = 0
+        val FRUIT_ITEM = 1
     }
 
-    override fun getItemViewType(position: Int) = getItem(position).layoutId
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder {
+
+        val layoutInflater = LayoutInflater.from(parent.context)
+        when(viewType)
+        {
+            HEADER_ITEM -> {
+                binding = LayoutHeaderItemBinding.inflate(
+                    layoutInflater, parent, false
+                )
+            }
+            FRUIT_ITEM -> {
+                binding = LayoutFruitItemBinding.inflate(
+                    layoutInflater, parent, false
+                )
+            }
+        }
+
+        return BaseViewHolder(binding.root)
+    }
+
+    override fun getItemViewType(position: Int) = getItem(position).viewType
 
     override fun onBindViewHolder(holder: BaseViewHolder, position: Int) {
-        getItem(position).bind(holder, itemClickCallback)
+        getItem(position).bind(binding, itemClickCallback)
     }
 }

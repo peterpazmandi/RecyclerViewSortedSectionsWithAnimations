@@ -1,22 +1,24 @@
 package com.inspirecoding.recyclerviewsortedsectionswithanimations
 
 
-import kotlinx.android.synthetic.main.layout_fruit_item.*
+import androidx.viewbinding.ViewBinding
+import com.inspirecoding.recyclerviewsortedsectionswithanimations.databinding.LayoutFruitItemBinding
 
 data class FruitItem(val name: String) : BaseItem {
 
-    override val layoutId: Int
-        get() = 2
+    override val viewType: Int = BaseListAdapter.FRUIT_ITEM
 
     override val uniqueId: Any
         get() = name
 
-    override fun bind(holder: BaseViewHolder, itemClickCallback: ((BaseItem) -> Unit)?) {
+    override fun bind(binding: ViewBinding, itemClickCallback: ((BaseItem) -> Unit)?) {
 
-        holder.containerView.setOnClickListener {
+        val _binding = binding as LayoutFruitItemBinding
+
+        _binding.root.setOnClickListener {
             itemClickCallback?.invoke(this)
         }
-        holder.text_fruit_name.text = name
+        _binding.textFruitName.text = name
 
     }
 }

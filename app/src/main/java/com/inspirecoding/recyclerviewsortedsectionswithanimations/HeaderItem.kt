@@ -1,17 +1,20 @@
 package com.inspirecoding.recyclerviewsortedsectionswithanimations
 
 
-import kotlinx.android.synthetic.main.layout_header_item.*
+import androidx.viewbinding.ViewBinding
+import com.inspirecoding.recyclerviewsortedsectionswithanimations.databinding.LayoutHeaderItemBinding
 
 data class HeaderItem(val letter: String) : BaseItem {
 
-    override val layoutId: Int
-        get() = 1
+    override val viewType: Int = BaseListAdapter.HEADER_ITEM
 
     override val uniqueId = letter
 
-    override fun bind (holder: BaseViewHolder, itemClickCallback: ((BaseItem) -> Unit)?) {
-        holder.text_header.text = letter
+    override fun bind (binding : ViewBinding, itemClickCallback: ((BaseItem) -> Unit)?) {
+
+        val _binding = binding as LayoutHeaderItemBinding
+
+        _binding.textHeader.text = letter
     }
 
 }
