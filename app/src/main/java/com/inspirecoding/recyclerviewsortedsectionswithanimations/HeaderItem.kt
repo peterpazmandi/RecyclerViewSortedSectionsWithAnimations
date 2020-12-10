@@ -12,8 +12,8 @@ data class HeaderItem(val letter: String) : BaseItem<LayoutHeaderItemBinding> {
     override fun initializeViewBinding(view: View) = LayoutHeaderItemBinding.bind(view)
 
     override fun bind(
-            binding: LayoutHeaderItemBinding,
-            itemClickCallback: ((BaseItem<LayoutHeaderItemBinding>) -> Unit)?
+        binding: LayoutHeaderItemBinding,
+        itemClickCallback: ((BaseItem<LayoutHeaderItemBinding>) -> Unit)?
     ) {
         binding.textHeader.text = letter
     }

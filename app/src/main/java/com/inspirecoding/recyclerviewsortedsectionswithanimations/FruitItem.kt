@@ -12,8 +12,8 @@ data class FruitItem(val name: String) : BaseItem<LayoutFruitItemBinding> {
     override fun initializeViewBinding(view: View) = LayoutFruitItemBinding.bind(view)
 
     override fun bind(
-            binding: LayoutFruitItemBinding,
-            itemClickCallback: ((BaseItem<LayoutFruitItemBinding>) -> Unit)?
+        binding: LayoutFruitItemBinding,
+        itemClickCallback: ((BaseItem<LayoutFruitItemBinding>) -> Unit)?
     ) {
         binding.root.setOnClickListener {
             itemClickCallback?.invoke(this)

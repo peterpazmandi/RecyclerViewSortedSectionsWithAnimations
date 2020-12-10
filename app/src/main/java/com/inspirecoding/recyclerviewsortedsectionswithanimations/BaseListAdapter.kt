@@ -14,18 +14,18 @@ import androidx.recyclerview.widget.ListAdapter
  * @param itemClickCallback An optional callback for clicks on an item
  * */
 class BaseListAdapter(
-        private val itemClickCallback: ((BaseItem<*>) -> Unit)?
+    private val itemClickCallback: ((BaseItem<*>) -> Unit)?
 ) : ListAdapter<BaseItem<*>, BaseViewHolder<*>>(
 
-        AsyncDifferConfig.Builder(object : DiffUtil.ItemCallback<BaseItem<*>>() {
-            override fun areItemsTheSame(oldItem: BaseItem<*>, newItem: BaseItem<*>): Boolean {
-                return oldItem.uniqueId == newItem.uniqueId
-            }
+    AsyncDifferConfig.Builder(object : DiffUtil.ItemCallback<BaseItem<*>>() {
+        override fun areItemsTheSame(oldItem: BaseItem<*>, newItem: BaseItem<*>): Boolean {
+            return oldItem.uniqueId == newItem.uniqueId
+        }
 
-            override fun areContentsTheSame(oldItem: BaseItem<*>, newItem: BaseItem<*>): Boolean {
-                return oldItem == newItem
-            }
-        }).build()
+        override fun areContentsTheSame(oldItem: BaseItem<*>, newItem: BaseItem<*>): Boolean {
+            return oldItem == newItem
+        }
+    }).build()
 
 ) {
     private var lastItemForViewTypeLookup: BaseItem<*>? = null
@@ -67,7 +67,8 @@ class BaseListAdapter(
     private fun getItemForViewType(viewType: Int): BaseItem<*> {
         val lastItemForViewTypeLookup = lastItemForViewTypeLookup
         if (lastItemForViewTypeLookup != null
-                && lastItemForViewTypeLookup.layoutId == viewType) {
+            && lastItemForViewTypeLookup.layoutId == viewType
+        ) {
             // We expect this to be a hit 100% of the time
             return lastItemForViewTypeLookup
         }
