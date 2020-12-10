@@ -5,9 +5,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
-import androidx.viewbinding.ViewBinding
-import com.inspirecoding.recyclerviewsortedsectionswithanimations.databinding.LayoutFruitItemBinding
-import com.inspirecoding.recyclerviewsortedsectionswithanimations.databinding.LayoutHeaderItemBinding
 
 /**
  * A base adapter that most RecyclerViews should be able to use
@@ -17,58 +14,72 @@ import com.inspirecoding.recyclerviewsortedsectionswithanimations.databinding.La
  * @param itemClickCallback An optional callback for clicks on an item
  * */
 class BaseListAdapter(
-    private val itemClickCallback: ((BaseItem) -> Unit)?
-) : ListAdapter<BaseItem, BaseViewHolder>(
+    private val itemClickCallback: ((BaseItem<*>) -> Unit)?
+) : ListAdapter<BaseItem<*>, BaseViewHolder<*>>(
 
-    AsyncDifferConfig.Builder<BaseItem>(object : DiffUtil.ItemCallback<BaseItem>() {
-        override fun areItemsTheSame(oldItem: BaseItem, newItem: BaseItem): Boolean {
+    AsyncDifferConfig.Builder(object : DiffUtil.ItemCallback<BaseItem<*>>() {
+        override fun areItemsTheSame(oldItem: BaseItem<*>, newItem: BaseItem<*>): Boolean {
             return oldItem.uniqueId == newItem.uniqueId
         }
 
-        override fun areContentsTheSame(oldItem: BaseItem, newItem: BaseItem): Boolean {
+        override fun areContentsTheSame(oldItem: BaseItem<*>, newItem: BaseItem<*>): Boolean {
             return oldItem == newItem
         }
     }).build()
 
 ) {
+    private var lastItemForViewTypeLookup: BaseItem<*>? = null
 
-    private lateinit var binding : ViewBinding
+    override fun getItemViewType(position: Int) = getItem(position).layoutId
 
-    companion object {
-        val HEADER_ITEM = 0
-        val FRUIT_ITEM = 1
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<*> {
+
+        // The layoutId is used as the viewType
+        val itemView = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
+
+        // Get the item so we can create the specific binding that the holder needs
+        val item = getItemForViewType(viewType)
+        return BaseViewHolder(item.initializeViewBinding(itemView))
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder {
-
-        val layoutInflater = LayoutInflater.from(parent.context)
-
-        when(viewType)
-        {
-            HEADER_ITEM -> {
-                binding = LayoutHeaderItemBinding.inflate(
-                    layoutInflater, parent, false
-                )
-            }
-            FRUIT_ITEM -> {
-                binding = LayoutFruitItemBinding.inflate(
-                    layoutInflater, parent, false
-                )
-            }
-        }
-
-        return BaseViewHolder(binding.root)
+    override fun onBindViewHolder(holder: BaseViewHolder<*>, position: Int) {
+        getItem(position).bind(holder, itemClickCallback)
     }
 
-    override fun getItemViewType(position: Int) = getItem(position).viewType
-
-    override fun onBindViewHolder(holder: BaseViewHolder, position: Int) {
-
-        if(getItem(position) is HeaderItem) {
-            binding = LayoutHeaderItemBinding.bind(holder.containerView)
-        } else {
-            binding = LayoutFruitItemBinding.bind(holder.containerView)
+    /**
+     * Copied from Groupie library:
+     *
+     * This idea was copied from Epoxy. :wave: Bright idea guys!
+     *
+     *
+     * Find the model that has the given view type so we can create a viewholder for that model.
+     *
+     *
+     * To make this efficient, we rely on the RecyclerView implementation detail that [ListAdapter.getItemViewType]
+     * is called immediately before [ListAdapter.onCreateViewHolder]. We cache the last model
+     * that had its view type looked up, and unless that implementation changes we expect to have a
+     * very fast lookup for the correct model.
+     *
+     *
+     * To be safe, we fallback to searching through all models for a view type match. This is slow and
+     * shouldn't be needed, but is a guard against RecyclerView behavior changing.
+     */
+    private fun getItemForViewType(viewType: Int): BaseItem<*> {
+        val lastItemForViewTypeLookup = lastItemForViewTypeLookup
+        if (lastItemForViewTypeLookup != null
+            && lastItemForViewTypeLookup.layoutId == viewType
+        ) {
+            // We expect this to be a hit 100% of the time
+            return lastItemForViewTypeLookup
         }
-        getItem(position).bind(binding, itemClickCallback)
+
+        // To be extra safe in case RecyclerView implementation details change...
+        for (i in 0 until itemCount) {
+            val item: BaseItem<*> = getItem(i)
+            if (item.layoutId == viewType) {
+                return item
+            }
+        }
+        throw IllegalStateException("Could not find model for view type: $viewType")
     }
 }
