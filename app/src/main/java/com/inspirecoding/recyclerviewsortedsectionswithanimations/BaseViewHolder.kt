@@ -1,9 +1,8 @@
 package com.inspirecoding.recyclerviewsortedsectionswithanimations
 
-import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.extensions.LayoutContainer
+import androidx.viewbinding.ViewBinding
 
-class BaseViewHolder(
-    override val containerView: View
-) : RecyclerView.ViewHolder(containerView), LayoutContainer
+class BaseViewHolder<T : ViewBinding>(
+    val binding: T,
+) : RecyclerView.ViewHolder(binding.root)

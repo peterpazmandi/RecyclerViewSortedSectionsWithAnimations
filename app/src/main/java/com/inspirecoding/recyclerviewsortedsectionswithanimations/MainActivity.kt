@@ -34,12 +34,12 @@ class MainActivity : AppCompatActivity() {
         fruitListAdapter.submitList(fruitsWithAlphabetHeaders)
     }
 
-    private fun createAlphabetizedFruit(fruits: List<String>): MutableList<BaseItem> {
+    private fun createAlphabetizedFruit(fruits: List<String>): MutableList<BaseItem<*>> {
 
         // Wrap data in list items
-        val fruitItems = fruits.map { FruitItem(it, this) }.sortedBy { it.name }
+        val fruitItems = fruits.map { FruitItem(it) }.sortedBy { it.name }
 
-        val fruitsWithAlphabetHeaders = mutableListOf<BaseItem>()
+        val fruitsWithAlphabetHeaders = mutableListOf<BaseItem<*>>()
 
         // Loop through the fruit list and add headers where we need them
         var currentHeader: String? = null

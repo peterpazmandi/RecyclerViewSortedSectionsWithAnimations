@@ -1,26 +1,21 @@
 package com.inspirecoding.recyclerviewsortedsectionswithanimations
 
-
 import android.content.Context
-import android.view.LayoutInflater
-import androidx.viewbinding.ViewBinding
+import android.view.View
 import com.inspirecoding.recyclerviewsortedsectionswithanimations.databinding.LayoutHeaderItemBinding
 
-data class HeaderItem(val letter: String, val context: Context) : BaseItem {
+data class HeaderItem(val letter: String, val context: Context) : BaseItem<LayoutHeaderItemBinding> {
 
-    override val itemViewType: ViewBinding
-        get() {
-            val layoutInflater = LayoutInflater.from(context)
-            return LayoutHeaderItemBinding.inflate(layoutInflater)
-        }
+    override val layoutId = R.layout.layout_header_item
 
     override val uniqueId = letter
 
-    override fun bind (binding : ViewBinding, itemClickCallback: ((BaseItem) -> Unit)?) {
+    override fun initializeViewBinding(view: View) = LayoutHeaderItemBinding.bind(view)
 
-        val _binding = binding as LayoutHeaderItemBinding
-
-        _binding.textHeader.text = letter
+    override fun bind(
+            binding: LayoutHeaderItemBinding,
+            itemClickCallback: ((BaseItem<LayoutHeaderItemBinding>) -> Unit)?
+    ) {
+        binding.textHeader.text = letter
     }
-
 }
