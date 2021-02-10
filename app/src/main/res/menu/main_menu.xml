@@ -3,6 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/sortByDesc"
+        android:icon="@drawable/ic_baseline_sort_by_alpha_24"
+        app:showAsAction="always"
+        android:title="Sort by Desc"
+        />
+    <item
         android:id="@+id/item_add"
         android:icon="@drawable/ic_add_24"
         app:showAsAction="always"

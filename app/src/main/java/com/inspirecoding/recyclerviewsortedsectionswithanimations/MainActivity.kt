@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.inspirecoding.recyclerviewsortedsectionswithanimations.databinding.ActivityMainBinding
@@ -31,7 +32,7 @@ class MainActivity : AppCompatActivity() {
 
         // OMG this adapter can be used for anything without even touching it!
         fruitListAdapter = BaseListAdapter { fruitClicked ->
-
+            Toast.makeText(this, "${fruitClicked.uniqueId}", Toast.LENGTH_LONG).show()
             // And removing items when we click them has a cool animation!
             fruits.remove((fruitClicked as? FruitItem?)?.name)
             val newList = createAlphabetizedFruit(fruits)
@@ -56,7 +57,36 @@ class MainActivity : AppCompatActivity() {
     private fun createAlphabetizedFruit(fruits: List<String>): MutableList<BaseItem<*>> {
 
         // Wrap data in list items
-        val fruitItems = fruits.map { FruitItem(it) }.sortedBy { it.name }
+        val fruitItems = fruits.map {
+            FruitItem(it)
+        }.sortedBy {
+            it.name
+        }
+
+        val fruitsWithAlphabetHeaders = mutableListOf<BaseItem<*>>()
+
+        // Loop through the fruit list and add headers where we need them
+        var currentHeader: String? = null
+        fruitItems.forEach { fruit ->
+            fruit.name.firstOrNull()?.toString()?.let {
+                if (it != currentHeader) {
+                    fruitsWithAlphabetHeaders.add(HeaderItem(it))
+                    currentHeader = it
+                }
+            }
+            fruitsWithAlphabetHeaders.add(fruit)
+        }
+        return fruitsWithAlphabetHeaders
+    }
+
+    private fun sortByDesc(fruits: List<String>): MutableList<BaseItem<*>> {
+
+        // Wrap data in list items
+        val fruitItems = fruits.map {
+            FruitItem(it)
+        }.sortedByDescending {
+            it.name
+        }
 
         val fruitsWithAlphabetHeaders = mutableListOf<BaseItem<*>>()
 
@@ -108,6 +138,10 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId)
         {
+            R.id.sortByDesc -> {
+                val newList = sortByDesc(fruits)
+                fruitListAdapter.submitList(newList)
+            }
             R.id.item_add -> {
                 openDialog()
             }

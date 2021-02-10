@@ -1,5 +1,7 @@
 package com.inspirecoding.recyclerviewsortedsectionswithanimations
 
+
+
 import android.view.View
 import com.inspirecoding.recyclerviewsortedsectionswithanimations.databinding.LayoutHeaderItemBinding
 
